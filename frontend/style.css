@@ -1,0 +1,144 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.header{
+    height: 5vh;
+    width: 100vw;
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 1vh 0px;
+    box-shadow: 2px 2px 2px grey;
+}
+.main-container{
+    position: static;
+    height: 93vh;
+    width: 100vw;
+    display: flex;
+    justify-content: flex-end;            
+}
+.todo-list-container{
+    width: 33%;
+    height: 100vh;
+    background-color: rgb(22, 21, 21);
+    color: white;
+    text-align: center;
+    position: fixed;
+    top: 7vh;
+    left: 0;
+    overflow: auto;
+    box-shadow: 2px 0px 2px grey;
+}
+.todo-list-container h3{
+    position: fixed;
+    width: 33%;
+    background-color: rgb(37, 37, 37); 
+    padding: 5px 0px;
+    margin-bottom: 3;
+}
+#todo-list{
+    width: 100%;
+    margin-top: 35px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+}
+.make-todo-container{
+    width: 70%;
+    height: 100%;
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.todo-item{
+    width: 100%;
+    padding: 3px 0px;
+    margin: 3px 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgb(37, 37, 37);
+}
+.todo-item-text-div{
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 15px;
+    width: 40%;
+    padding: 3px;
+    margin: 3px;
+}
+.todo-item-text-div:hover{
+    white-space: unset;
+    text-overflow: unset;
+    overflow: visible;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+.todo-item-priority-div{
+    width: 15%;
+    font-size: 15px;
+    font-weight: bold;
+    word-wrap: break-word;
+    padding: 3px;
+    margin: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.todo-action-btn-mark,.todo-action-btn-edit, .todo-action-btn-delete{
+    padding: 5px 10px;
+    height: 25px;
+    width: 25px;
+    border-radius: 5px;
+}
+.todo-action-btn-delete:hover, .todo-action-btn-edit:hover , .todo-action-btn-mark:hover{
+    background-color: rgb(102, 98, 98);
+}
+
+.priority-div{
+    margin: 20px 40px;
+    width: 200px;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+#todo{
+    margin: 20px 40px;
+    border: none;
+    background-color: transparent;
+    border-bottom: 1px solid grey;
+    padding: 15px;
+    width: 200px;
+    font-size: 16px;
+}
+#username{
+    display: none;
+}
+#todo:focus {
+    outline: none;
+}
+#priority{
+    margin-left: 10px;
+    width: 60%;
+    padding: 5px;
+}
+#add-todo{
+    border: none;
+    background-color: rgb(90, 32, 32);
+    color: white;
+    font-size: 16px;
+    padding: 15px;
+    border-radius: 10px;
+    width: 230px;
+    margin: 20px 40px;
+    box-shadow: 0px 0px 5px black;
+}

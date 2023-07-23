@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header"><h2>To Do App</h2></div>
+    <div class="main-container">
+        <div class="todo-list-container">
+            <h3 style="">To do's List</h3>
+            <div id="todo-list"></div>
+        </div>
+        <div class="make-todo-container">
+            <div class="todo-add-div">
+                <input type="text" name="username" id="username" placeholder="Username...">
+                <input type="text" name="todo" id="todo" placeholder="Todo...">
+                <div class="priority-div">
+                    <label for="priority">Priority : </label>
+                    <select name="priority" id="priority">
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <button id="add-todo">Add Todo</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
