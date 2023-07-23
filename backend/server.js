@@ -36,7 +36,7 @@ app.patch("/edit-todo/:id",(req,res)=>{
 });
 
 app.post("/post-todo",(req,res)=>{
-    utils.checkDuplicateAndSave(req,res,dbFile);
+    utils.createTodo(req.body,res,dbFile);
 });
 
 app.delete("/delete-todo/:id",(req,res)=>{

@@ -12,62 +12,6 @@ function readMyFile(filepath){
     });
 }
 
-function todoIsPresent(data,filepath){
-    return new Promise((resolve,reject)=>{
-        readMyFile(filepath)
-        .then((fileData)=>{
-            try{
-                if(fileData==""){
-                    resolve('empty');
-                }
-                const a = fileData.toString().slice("\n").trim();
-                const arr = a.split("\n");
-                for(const line of arr){
-                    const obj = JSON.parse(line);
-                    if(obj.name == data.name && obj.todo == data.todo && obj.priority==data.priority && obj.mark == data.mark){
-                        resolve(true);
-                    }
-                }
-                resolve(false);
-            } catch (err){
-                reject(err);
-            }
-        })
-        .catch((err)=>{
-            console.log("Error while reading from file and checking data if exists : ",err);
-        })
-    });
-}
-
-function saveTodoToFile(data,res,filepath,callback){
-    try{
-        fs.appendFile(filepath,JSON.stringify(data)+"\n",(err)=>{
-            if(err){
-                console.log("Error while appending : ",err);
-            }
-            callback(res,filepath);
-        });
-    } catch (err){
-        console.log("Error while appending : ",err);
-    }
-}
-
-function checkDuplicateAndSave(req,res,filepath){
-    todoIsPresent(req.body,filepath)
-    .then((isPresent)=>{
-        if(isPresent=="empty"){
-            saveTodoToFile(req.body,res,filepath,sendResponse);
-        } else if(isPresent){
-            sendResponse(res,filepath);
-        } else {
-            saveTodoToFile(req.body,res,filepath,sendResponse);
-        }
-    })
-    .catch((err)=>{
-        console.log("Error while checking for data if exist : ",err);
-    })
-}
-
 function sendResponse(res,filepath){
     readMyFile(filepath)
     .then((data)=>{
@@ -81,27 +25,9 @@ function sendResponse(res,filepath){
     })
 }
 
-function writeBackToFile(data, filepath){
-    fs.truncate(filepath,()=>{});
+function saveToFile(data,filepath){
     return new Promise((resolve,reject)=>{
-        
-        (async () => {
-            for (let i = 0; i < data.length; i++) {
-              try { 
-                await appendLineToFile(data[i].toString(),filepath);
-              } catch (err) {
-                reject(err);
-                return;
-              }
-            }
-            resolve(true);
-          })();
-    });
-}
-
-function appendLineToFile(line,filepath){
-    return new Promise((resolve,reject)=>{
-        fs.appendFile(filepath,line+"\n",(err)=>{
+        fs.writeFile(filepath,JSON.stringify(data),(err)=>{
             if(err){
                 reject(err);
             }
@@ -110,72 +36,47 @@ function appendLineToFile(line,filepath){
     })
 }
 
-function checkAndDelete(id,res,filepath){
+function createTodo(data,res,filepath){
     readMyFile(filepath)
     .then((fileData)=>{
-        const a = fileData.toString().slice("\n").trim();
-        const arr = a.split("\n");
-        arr.splice(id,1);
-        return writeBackToFile(arr,filepath);
-    })
-    .then((isDone)=>{
-        if(isDone){
+        if(fileData==""){
+            saveToFile(arr,filepath)
+            .then(()=>{
+                sendResponse(res,filepath)
+            })
+            .catch((Err)=>{
+                console.log("Err",Err);
+            })
+        }
+        const arr = JSON.parse(fileData);
+        const a = arr.find((t)=>{
+            return t.todo===data.todo && t.priority===data.priority && t.mark===data.mark
+        }) 
+        if(!a){
+            console.log("not",a);
+            arr.push(data); 
+            saveToFile(arr,filepath)
+            .then(()=>{
+                sendResponse(res,filepath)
+            })
+            .catch((Err)=>{
+                console.log("Err",Err);
+            })
+        } else {
             sendResponse(res,filepath);
         }
     })
     .catch((err)=>{
-        console.log("Error while reading and writing back to file : ",err);
-    });
+        console.log(err);
+    })
 }
 
-function markTodoAsDone(id,res,filepath){
+function deleteTodo(id,res,filepath){
     readMyFile(filepath)
     .then((fileData)=>{
-        const a = fileData.toString().slice("\n").trim();
-        const arr = a.split("\n");
-        const t = JSON.parse(arr[id]);
-        t.mark = "Done";
-        arr[id] = JSON.stringify(t);
-        return writeBackToFile(arr,filepath);
-    })
-    .then((isDone)=>{
-        if(isDone){
-            sendResponse(res,filepath);
-        }
-    })
-    .catch((err)=>{
-        console.log("Error while reading and writing back to file : ",err);
-    });
-}
-
-function findAndSend(id,res,filepath){
-    readMyFile(filepath)
-    .then((fileData)=>{
-        const a = fileData.toString().slice("\n").trim();
-        const arr = a.split("\n");
-        res.end(arr[id]);
+        const arr = JSON.parse(fileData);
+        arr.slice
     })
 }
 
-function updateTodo(id,data,res,filepath){
-    readMyFile(filepath)
-    .then((fileData)=>{
-        const a = fileData.toString().slice("\n").trim();
-        const arr = a.split("\n");
-        const t = JSON.parse(arr[id]);
-        t.todo = data.todo;
-        t.priority = data.priority;
-        arr[id] = JSON.stringify(t);
-        return writeBackToFile(arr,filepath);
-    }) 
-    .then((isDone)=>{
-        if(isDone){
-            sendResponse(res, filepath);
-        }
-    })
-    .catch((err)=>{
-        console.log("Error while reading and writing back to file : ",err);
-    })
-}
-
-module.exports = { checkDuplicateAndSave,sendResponse,updateTodo,checkAndDelete,markTodoAsDone,findAndSend};
+module.exports = { createTodo,sendResponse,updateTodo,checkAndDelete,markTodoAsDone,findAndSend};
