@@ -21,20 +21,7 @@ addToDo.addEventListener('click',()=>{
                 mark: "Pending"
             };
             todo.value = "";
-            fetch("/post-todo",{
-                method: 'POST',
-                headers: {
-                    'Content-Type' : 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then((response)=>{
-                return response.json();
-            })
-            .then((todos)=>{
-                extractDataFromResponseAndShow(todos,showTodos);    
-            })
-            .catch();
+            createTodo(data);
         } else{
             alert("Enter Todo to continue...");
         }
@@ -52,12 +39,8 @@ addToDo.addEventListener('click',()=>{
 function extractDataFromResponseAndShow(todolist,callback){
     refreshTodos()
     .then(()=>{
-        const a = todolist.toString().slice("\n").trim();
-        const arrOfTodos = a.split("\n");
-        for(i in arrOfTodos){
-            const data = JSON.parse(arrOfTodos[i]);
-            callback(data,i);
-        }
+        const arr = JSON.parse(todolist)
+        arr.map((todo)=>showTodos(todo,todo.id));
     })
     .catch();        
 }
@@ -111,7 +94,7 @@ function showTodos(data,id){
 
 const a = ()=>{
     todo.value = "";
-    fetch('/fetch-todo',{
+    fetch('/todo',{
         method: "GET",
         headers:{
             'Content-Type' : 'application/json'
@@ -130,6 +113,7 @@ a();
 
 document.body.addEventListener('click',(event)=>{
     if(event.target.alt == "Delete"){
+        console.log("delete id - >",event.target.id);
         deleteTodo(event.target.id);
     } else if(event.target.alt == "Edit"){
         editBtn = event.target;
@@ -171,8 +155,25 @@ function changeBtnsState(btn){
         addToDo.innerText = "Update Todo";
 }
 
+function createTodo(data){
+    fetch("/todo",{
+        method: 'POST',
+        headers: {
+            'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then((response)=>{
+        return response.json();
+    })
+    .then((todos)=>{
+        extractDataFromResponseAndShow(todos,showTodos);    
+    })
+    .catch();
+}
+
 function deleteTodo(id){
-    fetch("/delete-todo/"+id,{
+    fetch("/todo/"+id,{
             method: 'DELETE',
             headers: {
                 'Content-Type' : 'application/json'
@@ -191,8 +192,8 @@ function deleteTodo(id){
 }
 
 function editTodo(id,data){
-    fetch("/edit-todo/"+id,{
-        method : "PATCH",
+    fetch("/todo/"+id,{
+        method : "PUT",
         headers: {
                 'Content-Type' : 'application/json'
         },
@@ -210,7 +211,7 @@ function editTodo(id,data){
 
 function todoMarkDone(id){
     const item = document.getElementById(id);
-    fetch("/todo-done/"+id,{
+    fetch("/todo/"+id,{
         method: "PATCH",
         headers: {
                 'Content-Type' : 'application/json'

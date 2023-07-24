@@ -11,16 +11,9 @@ const scriptFile = path.join(__dirname,'..','frontend','script.js');
 app.use(express.json());
 app.use(express.static(path.join(__dirname,'..','/icons')));
 
+//homepage html,css, javascript
 app.get("/",(req, res)=>{
     res.sendFile(htmlFile);
-});
-
-app.get("/fetch-todo",(req,res)=>{
-    utils.sendResponse(res,dbFile);
-})
-
-app.get("/todo/:id",(req,res)=>{
-    utils.findAndSend(req.params.id,res,dbFile);
 });
 
 app.get("/style.css",(req,res)=>{
@@ -31,20 +24,29 @@ app.get("/script.js",(req,res)=>{
     res.sendFile(scriptFile);    
 });
 
-app.patch("/edit-todo/:id",(req,res)=>{
-    utils.updateTodo(req.params.id,req.body,res,dbFile);
+//for fetching all the todos
+app.get("/todo",(req,res)=>{
+    utils.sendResponse(res,dbFile);
+})
+//for fetching a todo with id
+app.get("/todo/:id",(req,res)=>{
+    utils.getTodo(req.params.id,res,dbFile);
 });
-
-app.post("/post-todo",(req,res)=>{
+//for editing todo
+app.put("/todo/:id",(req,res)=>{
+    utils.editTodo(req.params.id,req.body,res,dbFile);
+});
+//for creating new todo
+app.post("/todo",(req,res)=>{
     utils.createTodo(req.body,res,dbFile);
 });
-
-app.delete("/delete-todo/:id",(req,res)=>{
-    utils.checkAndDelete(req.params.id,res,dbFile);
+//for deleting a todo with id
+app.delete("/todo/:id",(req,res)=>{
+    utils.deleteTodo(req.params.id,res,dbFile);
 });
-
-app.patch("/todo-done/:id",(req,res)=>{
-    utils.markTodoAsDone(req.params.id,res,dbFile);
+//for marking todo as done with id
+app.patch("/todo/:id",(req,res)=>{
+    utils.markDone(req.params.id,res,dbFile);
 });
 
 app.listen(8000, ()=>{
